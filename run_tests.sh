@@ -32,7 +32,6 @@ basic_tests() {
 			./tester $1 > gnl_output.txt
 			local temp=$(diff $1 gnl_output.txt)
 			if [[ -n "$temp" ]]; then
-				echo
 				echo "${RED}FAILED${RESET}: $1"
 				echo >> results/result_log.txt
 				echo "Failed test $1 with buf size $2" >> results/result_log.txt
@@ -43,12 +42,12 @@ basic_tests() {
 			rm gnl_output.txt
 		}
 
-		echo "${PINK}   _____ _   _ _       _______ ______  _____ _______ ______ _____   ";
-		echo "  / ____| \ | | |     |__   __|  ____|/ ____|__   __|  ____|  __ \  ";
-		echo " | |  __|  \| | |  ______| |  | |__  | (___    | |  | |__  | |__) | ";
-		echo " | | |_ | . \ | | |______| |  |  __|  \___ \   | |  |  __| |  _  /  ";
-		echo " | |__| | |\  | |____    | |  | |____ ____) |  | |  | |____| | \ \  ";
-		echo "  \_____|_| \_|______|   |_|  |______|_____/   |_|  |______|_|  \_\ ${RESET}";
+		echo "${PINK}   _____ _   _ _         _______ ______  _____ _______ ______ _____   ";
+		echo "  / ____| \ | | |       |__   __|  ____|/ ____|__   __|  ____|  __ \  ";
+		echo " | |  __|  \| | |  ______  | |  | |__  | (___    | |  | |__  | |__) | ";
+		echo " | | |_ | . \ | | |______| | |  |  __|  \___ \   | |  |  __| |  _  /  ";
+		echo " | |__| | |\  | |____      | |  | |____ ____) |  | |  | |____| | \ \  ";
+		echo "  \_____|_| \_|______|     |_|  |______|_____/   |_|  |______|_|  \_\ ${RESET}";
 		echo "                                             ${GREY}-jsaariko${RESET}";
 		echo "                                                   ${DGREY}make-up by ldideric${RESET}";
 
@@ -88,8 +87,8 @@ basic_tests() {
 			compare_output $dir/wazzup $i
 			compare_output $dir/null-terminate $i
 			echo "${GREEN}All done!${RESET}"
-			echo
 		done
+		echo 
 	}
 
 
@@ -126,9 +125,12 @@ if [[ "$*" == "bonus" ]]; then
 		echo
 	done
 
-	echo "${PURP}Bonus tests finished${RESET}"
-	echo "${PURP}To test basic input: sh run_tests.sh${RESET}"
-	echo "${PURP}To see differences in output, see result_log_bonus.txt in results/${RESET}"
+	echo
+	echo "--<>-- ${GREEN}TESTING FINISHED${RESET} --<>--"
+	echo
+	echo "${PINK}To test basic input: sh run_tests.sh${RESET}"
+	echo "${PINK}To see differences in output, see result_log_bonus.txt in results/${RESET}"
+	echo
 
 	rm get_next_line_bonus_cpy.h
 
@@ -145,7 +147,7 @@ elif [[ "$*" == "malloc" ]]; then
 
 	sed -i '' 's/get_next_line.h/get_next_line_cpy.h/g' fake_get_next_line.c fake_get_next_line_utils.c
 
-	perl -pi  's/([\s\(\)])malloc\(/\1destroy_malloc\(/g' fake_get_next_line.c fake_get_next_line_utils.c	
+	perl -pi -e 's/([\s\(\)])malloc\(/\1destroy_malloc\(/g' fake_get_next_line.c fake_get_next_line_utils.c	
 
 	basic_tests $F_GNL $F_GNL_UTILS
 
@@ -154,6 +156,7 @@ elif [[ "$*" == "malloc" ]]; then
 	rm fake_get_next_line_utils.c
 
 else
+
 
 	cp ${PATH_GNL}/get_next_line.h get_next_line_cpy.h
 	sed -i '' 's/GET_NEXT_LINE_H/GET_NEXT_LINE_CPY_H/g' get_next_line_cpy.h
@@ -164,7 +167,9 @@ else
 
 	basic_tests $GNL $GNL_UTILS
 
-	echo "${PURP}Testing large files ...${RESET}"
+	echo "${PURP}Testing miscellaneous tests ...${RESET}"
+	echo
+	echo "${PINK}Testing large files ...${RESET}"
 
 	compare_output $dir/bible $i
 	compare_output $dir/long-1x $i
@@ -174,9 +179,9 @@ else
 	echo "${GREEN}All done!${RESET}"
 
 	gcc -o tester -Wall -Wextra -Werror -D BUFFER_SIZE=12 ${PATH_GNL}/get_next_line.c ${PATH_GNL}/get_next_line_utils.c $includes
+
 	echo
-	echo "${PURP}Testing with bad line param ...${RESET}"
-	echo
+	echo "${PINK}Testing with bad line param ...${RESET}"
 	./tester null > gnl_output.txt
 	temp=$(diff $dir/empty gnl_output.txt)
 	if [[ -z "$temp" ]]; then
@@ -188,9 +193,7 @@ else
 	rm gnl_output.txt
 
 	echo
-	echo "${PURP}Testing with stdin ...${RESET}"
-	echo
-
+	echo "${PINK}Testing with stdin ...${RESET}"
 	cat $dir/easy | ./tester  > gnl_output.txt
 	temp=$(diff $dir/easy gnl_output.txt)
 	if [[ -z "$temp" ]]; then
@@ -204,8 +207,7 @@ else
 	gcc -o tester -Wall -Wextra -Werror -D BUFFER_SIZE=0 ${PATH_GNL}/get_next_line.c ${PATH_GNL}/get_next_line_utils.c $includes
 
 	echo
-	echo "${PURP}Testing with buf size 0 ...${RESET}"
-	echo
+	echo "${PINK}Testing with buf size 0 ...${RESET}"
 	./tester $dir/4-five > gnl_output.txt
 	temp=$(diff $dir/empty gnl_output.txt)
 	if [[ -z "$temp" ]]; then
@@ -219,8 +221,7 @@ else
 	gcc -o tester -Wall -Wextra -Werror -D BUFFER_SIZE=-1 ${PATH_GNL}/get_next_line.c ${PATH_GNL}/get_next_line_utils.c $includes
 
 	echo
-	echo "${PURP}Testing with buf size -1 ...${RESET}"
-	echo
+	echo "${PINK}Testing with buf size -1 ...${RESET}"
 	./tester neg > gnl_output.txt
 	temp=$(diff $dir/empty gnl_output.txt)
 	if [[ -z "$temp" ]]; then
@@ -234,8 +235,7 @@ else
 	gcc -o tester -Wall -Wextra -Werror -D BUFFER_SIZE=1 ${PATH_GNL}/get_next_line.c ${PATH_GNL}/get_next_line_utils.c $includes
 
 	echo
-	echo "${PURP}Testing with bad fd ...${RESET}"
-	echo
+	echo "${PINK}Testing with bad fd ...${RESET}"
 	./tester fd > gnl_output.txt
 	temp=$(diff $dir/empty gnl_output.txt)
 	if [[ -z "$temp" ]]; then
@@ -247,8 +247,7 @@ else
 	rm gnl_output.txt
 
 	echo
-	echo "${PURP}Testing malloc protection ...${RESET}"
-	echo
+	echo "${PINK}Testing malloc protection ...${RESET}"
 
 	cp ${PATH_GNL}/get_next_line.c fake_get_next_line.c
 	cp ${PATH_GNL}/get_next_line_utils.c fake_get_next_line_utils.c
@@ -278,8 +277,7 @@ else
 	rm gnl_output.txt
 
 	echo
-	echo "${PURP}Testing for memory leaks ...${RESET}"
-	echo
+	echo "${PINK}Testing for memory leaks ...${RESET}"
 
 	cp ${PATH_GNL}/get_next_line.c fake_get_next_line.c
 	cp ${PATH_GNL}/get_next_line_utils.c fake_get_next_line_utils.c
